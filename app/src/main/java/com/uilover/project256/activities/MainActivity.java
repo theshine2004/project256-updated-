@@ -10,6 +10,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -19,8 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uilover.project256.R;
 import com.uilover.project256.adapters.CategoryAdapters;
+import com.uilover.project256.adapters.PopularAdapter;
 import com.uilover.project256.databinding.ActivityMainBinding;
 import com.uilover.project256.domain.CategoryModel;
+import com.uilover.project256.domain.ItemModel;
 
 import java.util.ArrayList;
 
@@ -36,6 +39,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         initCategory();
+        initPopular();
+
+    }
+
+    private void initPopular() {
+        DatabaseReference myref = database.getReference("Popular");
+        binding.progressBarPopular.setVisibility(View.VISIBLE);
+        ArrayList<ItemModel> list = new ArrayList<>();
+        myref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot issue : snapshot.getChildren()){
+                        list.add(issue.getValue(ItemModel.class));
+                    }
+                }
+                if(!list.isEmpty()){
+                    binding.recyclerViewPopular.setLayoutManager(
+                            new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false)
+                    );
+                    RecyclerView.Adapter adapter = new PopularAdapter(list);
+                    binding.recyclerViewPopular.setAdapter(adapter);
+                    binding.progressBarPopular.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void initCategory(){

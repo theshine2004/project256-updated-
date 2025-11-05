@@ -6,4 +6,15 @@
     </style>
 
     <style name="Theme.Project256" parent="Base.Theme.Project256" />
+
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <style name="circleImageView5dp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5dp</item>
+    </style>
+
 </resources>
